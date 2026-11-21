@@ -1,0 +1,18 @@
+# Python cache & sanal ortam
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# IDE & Editör ayarları
+.vscode/
+.idea/
+
+# İşletim sistemi kalıntıları
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook geçici dosyaları (kullanırsanız)
+.ipynb_checkpoints/
