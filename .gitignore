@@ -1,4 +1,4 @@
-# Python cache & sanal ortam
+# Python cache & virtual environments
 __pycache__/
 *.py[cod]
 *$py.class
@@ -6,13 +6,16 @@ venv/
 .venv/
 env/
 
-# IDE & Editör ayarları
+# IDE settings
 .vscode/
 .idea/
 
-# İşletim sistemi kalıntıları
+# OS files
 .DS_Store
 Thumbs.db
 
-# Jupyter Notebook geçici dosyaları (kullanırsanız)
+# Jupyter checkpoints
 .ipynb_checkpoints/
+
+# Test cache
+.pytest_cache/

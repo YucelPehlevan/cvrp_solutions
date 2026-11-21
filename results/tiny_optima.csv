@@ -1,0 +1,4 @@
+instance,n,Q,K,total_demand,optimal_cost,routes
+MediDrone-tiny-n7,7,100,3,103,2581.5101,6 1 3 2 | 7 5 4
+MediDrone-tiny-n8,8,100,3,128,2597.1171,6 1 3 2 7 | 5 8 4
+MediDrone-tiny-n9,9,100,3,148,3216.779,6 1 8 3 2 | 9 7 5 4
