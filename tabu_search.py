@@ -6,7 +6,7 @@
 - Aspiration: a tabu move is allowed if it gives a new best feasible solution.
 - Capacity: f = distance + lambda * overload, lambda is adapted during the search.
 
-Input/output routes: lists of customers without the depot.
+Start solution: Clarke-Wright (Task 3). Input/output routes: lists of customers without the depot.
 Internally every route is [0, c1, ..., ck, 0] and there are exactly K routes ([0, 0] = empty).
 """
 import math
@@ -17,26 +17,8 @@ from typing import List, Optional
 from problem import CVRPInstance, calculate_cost, is_feasible
 
 
-def sweep_initial(instance: CVRPInstance) -> List[List[int]]:
-    """Temporary start solution until Clarke-Wright is ready: sort customers by angle
-    around the depot and open a new route when the capacity is full."""
-    x0, y0 = instance.coords[0]
-    order = sorted(range(1, instance.n + 1),
-                   key=lambda c: math.atan2(instance.coords[c][1] - y0, instance.coords[c][0] - x0))
-    routes, cur, load = [], [], 0
-    for c in order:
-        if load + instance.demands[c] > instance.capacity:
-            routes.append(cur)
-            cur, load = [], 0
-        cur.append(c)
-        load += instance.demands[c]
-    if cur:
-        routes.append(cur)
-    return routes
-
-
 def _reduce_to_k(instance: CVRPInstance, routes: List[List[int]]) -> List[List[int]]:
-    """If the start has more than K routes, dissolve the lightest ones (cheapest insertion).
+    """Clarke-Wright may return more than K routes: dissolve the lightest ones (cheapest insertion).
     Capacity is ignored here; the penalty term repairs any overload."""
     D, q = instance.dist_matrix, instance.demands
     routes = [list(r) for r in routes if r]
@@ -309,9 +291,13 @@ def tabu_search(instance: CVRPInstance,
 
 
 if __name__ == "__main__":
+    from clarke_wright import clarke_wright
     from data_loader import parse_cvrplib
-    inst = parse_cvrplib("data/A-n32-k5.vrp")
-    start = sweep_initial(inst)
-    res = tabu_search(inst, start, time_limit=5, seed=1)
-    print("start:", calculate_cost(inst, start), "| TS:", res['cost'],
-          "| feasible:", res['feasible'], "| iterations:", res['iterations'])
+    for name in ["A-n32-k5", "A-n45-k6", "A-n60-k9", "A-n80-k10"]:
+        inst = parse_cvrplib(f"data/{name}.vrp")
+        start = clarke_wright(inst)
+        res = tabu_search(inst, start, time_limit=5, seed=1)
+        gap = 100 * (res['cost'] - inst.bks) / inst.bks
+        print(f"{name}: CW = {calculate_cost(inst, start):.0f} ({len(start)} routes) -> "
+              f"TS = {res['cost']:.0f}, gap = {gap:.2f}%, feasible = {res['feasible']}, "
+              f"iterations = {res['iterations']}")
